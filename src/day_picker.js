@@ -90,6 +90,14 @@ export class UIDayPicker extends React.Component {
     });
   };
 
+  reset = () => {
+    this.setState({
+      from: this.props.defaultFrom,
+      to: this.props.defaultTo,
+      enteredTo: this.props.defaultTo
+    });
+  };
+
   updateLastDays = days => () => {
     const from = moment()
       .subtract(days, "days")
@@ -161,6 +169,27 @@ export class UIDayPicker extends React.Component {
     });
   };
 
+  updateCurrentYear = () => {
+    const from = moment()
+      .startOf("year")
+      .toDate();
+
+    this.setState({
+      from
+    });
+  };
+
+  updateAllTime = () => {
+    const from = moment("01/01/2010", "M-D-Y").toDate();
+    const to = moment().toDate();
+
+    this.setState({
+      from,
+      to,
+      enteredTo: to
+    });
+  };
+
   render() {
     const { from, to, enteredTo } = this.state;
     const modifiers = { start: from, end: enteredTo };
@@ -211,6 +240,16 @@ export class UIDayPicker extends React.Component {
                 Previous quater
               </button>
             </div>
+            <div>
+              <button type="button" onClick={this.updateCurrentYear}>
+                Current year
+              </button>
+            </div>
+            <div>
+              <button type="button" onClick={this.updateAllTime}>
+                All time
+              </button>
+            </div>
           </div>
           <DayPickerContainer
             numberOfMonths={3}
@@ -221,9 +260,18 @@ export class UIDayPicker extends React.Component {
             onDayClick={this.handleDayClick}
             onDayMouseEnter={this.handleDayMouseEnter}
           />
-          <button type="button" onClick={this.handleUpdate}>
-            Ok
-          </button>
+          <div>
+            <div>
+              <button type="button" onClick={this.handleUpdate}>
+                Ok
+              </button>
+            </div>
+            <div>
+              <button type="button" onClick={this.reset}>
+                Reset
+              </button>
+            </div>
+          </div>
         </WrapperContent>
       </Popover>
     );

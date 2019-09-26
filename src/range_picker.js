@@ -17,8 +17,8 @@ const Input = styled.input`
     `}
 `;
 
-const defaultFrom = "01/02/2019";
-const defaultTo = "01/15/2019";
+const defaultFrom = "09/15/2019";
+const defaultTo = "09/26/2019";
 
 export class UIRangePicker extends React.Component {
   constructor(props) {
