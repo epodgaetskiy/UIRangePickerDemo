@@ -100,7 +100,7 @@ export class UIDayPicker extends React.Component {
 
   updateLastDays = days => () => {
     const from = moment()
-      .subtract(days, "days")
+      .subtract(days - 1, "days")
       .toDate();
     const to = moment().toDate();
     this.setState({
