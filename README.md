@@ -1,2 +1,0 @@
-# UIRangePickerDemo
-Created with CodeSandbox
