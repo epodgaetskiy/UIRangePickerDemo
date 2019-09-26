@@ -144,7 +144,22 @@ export class UIDayPicker extends React.Component {
     });
   };
 
-  updatePreviousQuater = () => {};
+  updatePreviousQuater = () => {
+    const from = moment()
+      .subtract(1, "quarter")
+      .startOf("quarter")
+      .toDate();
+    const to = moment()
+      .subtract(1, "quarter")
+      .endOf("quarter")
+      .toDate();
+
+    this.setState({
+      from,
+      to,
+      enteredTo: to
+    });
+  };
 
   render() {
     const { from, to, enteredTo } = this.state;

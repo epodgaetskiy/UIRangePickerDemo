@@ -17,6 +17,9 @@ const Input = styled.input`
     `}
 `;
 
+const defaultFrom = "01/02/2019";
+const defaultTo = "01/15/2019";
+
 export class UIRangePicker extends React.Component {
   constructor(props) {
     super(props);
@@ -24,13 +27,13 @@ export class UIRangePicker extends React.Component {
     this.state = {
       showDayPicker: false,
       dates: {
-        from: moment("09/10/2019", "MM/DD/YYYY"),
-        to: moment("09/26/2019", "MM/DD/YYYY")
+        from: moment(defaultFrom, "MM/DD/YYYY"),
+        to: moment(defaultTo, "MM/DD/YYYY")
       },
       inputs: {
         values: {
-          from: moment("09/10/2019", "MM/DD/YYYY").format("l"),
-          to: moment("09/26/2019", "MM/DD/YYYY").format("l")
+          from: moment(defaultFrom, "MM/DD/YYYY").format("l"),
+          to: moment(defaultTo, "MM/DD/YYYY").format("l")
         },
         errors: {}
       }
