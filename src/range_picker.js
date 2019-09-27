@@ -118,29 +118,16 @@ export class UIRangePicker extends React.Component {
 
   onFocusInput = event => {
     const name = event.target.name;
-    if (this.state.showDayPicker) {
-      this.dayPickerRef.current.resetDates();
-    }
 
-    this.setState(
-      state => ({
-        inputs: {
-          ...state.inputs,
-          focus: {
-            [name]: true
-          }
-        }
-      }),
-      () => {
-        if (this.state.showDayPicker) {
-          this.dayPickerRef.current.navigateToCurrentMonth(
-            this.state.dates[name].toDate()
-          );
-        } else {
-          this.showDayPicker();
+    this.setState(state => ({
+      inputs: {
+        ...state.inputs,
+        focus: {
+          [name]: true
         }
       }
-    );
+    }));
+    this.showDayPicker();
   };
 
   onBlurInput = () => {

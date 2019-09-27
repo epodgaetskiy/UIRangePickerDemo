@@ -51,6 +51,13 @@ export class UIDayPicker extends React.Component {
     };
 
     this.dayPickerContainerRef = React.createRef();
+
+    this.initialState = {
+      from: props.defaultFrom,
+      to: props.defaultTo,
+      enteredTo: props.defaultTo,
+      customRange: ""
+    };
   }
 
   isSelectingFirstDay = (from, to, day) => {
@@ -104,17 +111,9 @@ export class UIDayPicker extends React.Component {
   };
 
   resetDates = () => {
-    this.setState(
-      {
-        from: this.props.defaultFrom,
-        to: this.props.defaultTo,
-        enteredTo: this.props.defaultTo,
-        customRange: ""
-      },
-      () => {
-        this.navigateToCurrentMonth(this.state.to);
-      }
-    );
+    this.setState(this.this.initialState, () => {
+      this.navigateToCurrentMonth(this.state.to);
+    });
   };
 
   navigateToCurrentMonth = to => {
@@ -148,6 +147,26 @@ export class UIDayPicker extends React.Component {
       customRange: event.target.value
     });
   };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.inputsFocus.from !== this.props.inputsFocus.from &&
+      this.props.inputsFocus.from
+    ) {
+      this.setState(this.initialState, () => {
+        this.navigateToCurrentMonth(this.state.from);
+      });
+    }
+
+    if (
+      prevProps.inputsFocus.to !== this.props.inputsFocus.to &&
+      this.props.inputsFocus.to
+    ) {
+      this.setState(this.initialState, () => {
+        this.navigateToCurrentMonth(this.state.to);
+      });
+    }
+  }
 
   render() {
     const { from, to, enteredTo, customRange } = this.state;
