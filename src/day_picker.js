@@ -37,6 +37,10 @@ const DayPickerContainer = styled(DayPicker)`
 `;
 
 export class UIDayPicker extends React.Component {
+  static defaultProps = {
+    today: new Date()
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -147,16 +151,17 @@ export class UIDayPicker extends React.Component {
 
   render() {
     const { from, to, enteredTo, customRange } = this.state;
+    const { today } = this.props;
     const modifiers = { start: from, end: enteredTo };
-    const disabledDays = { after: new Date() };
+    const disabledDays = { after: today };
     const selectedDays = [from, { from, to: enteredTo }];
     const positionMonths = {
       initialMonth: this.props.inputsFocus.from
         ? from
         : this.props.inputsFocus.to
         ? to
-        : new Date(),
-      toMonth: new Date()
+        : today,
+      toMonth: today
     };
     return (
       <Popover>
