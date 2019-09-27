@@ -146,26 +146,28 @@ export class UIRangePicker extends React.Component {
           name="from"
           value={inputs.values.from}
           onChange={this.onChangeInput}
-          onFocus={this.showDayPicker}
-          // onFocus={this.onFocusInput}
-          // onBlur={this.onBlurInput}
           error={inputs.errors.from}
+          onFocus={this.onFocusInput}
+          onBlur={this.onBlurInput}
         />
         <Input
           name="to"
           value={inputs.values.to}
           onChange={this.onChangeInput}
-          onFocus={this.showDayPicker}
-          // onBlur={this.onBlurInput}
           error={inputs.errors.to}
+          onFocus={this.onFocusInput}
+          onBlur={this.onBlurInput}
         />
         {showDayPicker && (
           <UIDayPicker
-            key={`${dates.from}${dates.to}`}
+            key={`${dates.from}${dates.to}${Boolean(
+              inputs.focus.from
+            )}${Boolean(inputs.focus.to)}`}
             defaultFrom={dates.from ? dates.from.toDate() : dates.from}
             defaultTo={dates.to ? dates.to.toDate() : dates.to}
             onUpdateRange={this.onUpdateRange}
             hideDayPicker={this.hideDayPicker}
+            inputsFocus={inputs.focus}
           />
         )}
       </Wrapper>

@@ -134,13 +134,15 @@ export class UIDayPicker extends React.Component {
   };
 
   updateCustomRange = event => {
-    const { type, days } = CUSTOM_RANGES[event.target.value];
+    if (event.target.value) {
+      const { type, days } = CUSTOM_RANGES[event.target.value];
+      const { from, to } = getDates({ type, days });
+      this.updateDates({ from, to });
+    }
+
     this.setState({
       customRange: event.target.value
     });
-
-    const { from, to } = getDates({ type, days });
-    this.updateDates({ from, to });
   };
 
   render() {
@@ -148,6 +150,11 @@ export class UIDayPicker extends React.Component {
     const modifiers = { start: from, end: enteredTo };
     const disabledDays = { after: new Date() };
     const selectedDays = [from, { from, to: enteredTo }];
+    const positionMonths = {
+      initialMonth: this.props.inputsFocus.from ? from : to,
+      // fromMonth: this.props.inputsFocus.from ? from : null,
+      toMonth: new Date()
+    };
     return (
       <Popover>
         <Cover onClick={this.props.hideDayPicker} />
@@ -170,8 +177,7 @@ export class UIDayPicker extends React.Component {
           </div>
           <DayPickerContainer
             numberOfMonths={3}
-            initialMonth={to}
-            toMonth={to}
+            {...positionMonths}
             selectedDays={selectedDays}
             disabledDays={disabledDays}
             modifiers={modifiers}
