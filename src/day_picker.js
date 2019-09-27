@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import moment from "moment";
 import DayPicker, { DateUtils } from "react-day-picker";
 import "react-day-picker/lib/style.css";
 import { CustomRangeSelect } from "./custom_range_select";
@@ -44,6 +45,8 @@ export class UIDayPicker extends React.Component {
       enteredTo: props.defaultTo,
       customRange: ""
     };
+
+    this.dayPickerContainerRef = React.createRef();
   }
 
   isSelectingFirstDay = (from, to, day) => {
@@ -97,20 +100,37 @@ export class UIDayPicker extends React.Component {
   };
 
   resetDates = () => {
-    this.setState({
-      from: this.props.defaultFrom,
-      to: this.props.defaultTo,
-      enteredTo: this.props.defaultTo,
-      customRange: ""
-    });
+    this.setState(
+      {
+        from: this.props.defaultFrom,
+        to: this.props.defaultTo,
+        enteredTo: this.props.defaultTo,
+        customRange: ""
+      },
+      () => {
+        this.navigateToCurrentMonth(this.state.to);
+      }
+    );
+  };
+
+  navigateToCurrentMonth = to => {
+    const navigateTo = moment(to)
+      .subtract(2, "months")
+      .toDate();
+    this.dayPickerContainerRef.current.showMonth(navigateTo);
   };
 
   updateDates = ({ from, to }) => {
-    this.setState({
-      from,
-      to,
-      enteredTo: to
-    });
+    this.setState(
+      {
+        from,
+        to,
+        enteredTo: to
+      },
+      () => {
+        this.navigateToCurrentMonth(this.state.to);
+      }
+    );
   };
 
   updateCustomRange = event => {
@@ -149,7 +169,6 @@ export class UIDayPicker extends React.Component {
             </div>
           </div>
           <DayPickerContainer
-            key={`${from}${to}`}
             numberOfMonths={3}
             initialMonth={to}
             toMonth={to}
@@ -158,6 +177,7 @@ export class UIDayPicker extends React.Component {
             modifiers={modifiers}
             onDayClick={this.handleDayClick}
             onDayMouseEnter={this.handleDayMouseEnter}
+            ref={this.dayPickerContainerRef}
           />
         </WrapperContent>
       </Popover>

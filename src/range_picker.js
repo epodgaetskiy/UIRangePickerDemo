@@ -35,7 +35,11 @@ export class UIRangePicker extends React.Component {
           from: moment(defaultFrom, "MM/DD/YYYY").format("l"),
           to: moment(defaultTo, "MM/DD/YYYY").format("l")
         },
-        errors: {}
+        errors: {},
+        focus: {
+          from: false,
+          to: false
+        }
       }
     };
   }
@@ -109,6 +113,31 @@ export class UIRangePicker extends React.Component {
     this.hideDayPicker();
   };
 
+  onFocusInput = event => {
+    const name = event.target.name;
+    this.showDayPicker();
+    this.setState(state => ({
+      inputs: {
+        ...state.inputs,
+        focus: {
+          [name]: true
+        }
+      }
+    }));
+  };
+
+  onBlurInput = () => {
+    this.setState(state => ({
+      inputs: {
+        ...state.inputs,
+        focus: {
+          to: false,
+          from: false
+        }
+      }
+    }));
+  };
+
   render() {
     const { dates, inputs, showDayPicker } = this.state;
     return (
@@ -118,6 +147,8 @@ export class UIRangePicker extends React.Component {
           value={inputs.values.from}
           onChange={this.onChangeInput}
           onFocus={this.showDayPicker}
+          // onFocus={this.onFocusInput}
+          // onBlur={this.onBlurInput}
           error={inputs.errors.from}
         />
         <Input
@@ -125,6 +156,7 @@ export class UIRangePicker extends React.Component {
           value={inputs.values.to}
           onChange={this.onChangeInput}
           onFocus={this.showDayPicker}
+          // onBlur={this.onBlurInput}
           error={inputs.errors.to}
         />
         {showDayPicker && (
