@@ -5,6 +5,7 @@ import { UIDayPicker } from "./day_picker";
 
 const Wrapper = styled.div`
   position: relative;
+  z-index: 3;
 `;
 
 const Input = styled.input`
@@ -42,6 +43,8 @@ export class UIRangePicker extends React.Component {
         }
       }
     };
+
+    this.dayPickerRef = React.createRef();
   }
 
   showDayPicker = () => {
@@ -115,15 +118,29 @@ export class UIRangePicker extends React.Component {
 
   onFocusInput = event => {
     const name = event.target.name;
-    this.showDayPicker();
-    this.setState(state => ({
-      inputs: {
-        ...state.inputs,
-        focus: {
-          [name]: true
+    if (this.state.showDayPicker) {
+      this.dayPickerRef.current.resetDates();
+    }
+
+    this.setState(
+      state => ({
+        inputs: {
+          ...state.inputs,
+          focus: {
+            [name]: true
+          }
+        }
+      }),
+      () => {
+        if (this.state.showDayPicker) {
+          this.dayPickerRef.current.navigateToCurrentMonth(
+            this.state.dates[name].toDate()
+          );
+        } else {
+          this.showDayPicker();
         }
       }
-    }));
+    );
   };
 
   onBlurInput = () => {
@@ -160,14 +177,13 @@ export class UIRangePicker extends React.Component {
         />
         {showDayPicker && (
           <UIDayPicker
-            key={`${dates.from}${dates.to}${Boolean(
-              inputs.focus.from
-            )}${Boolean(inputs.focus.to)}`}
+            key={`${dates.from}${dates.to}`}
             defaultFrom={dates.from ? dates.from.toDate() : dates.from}
             defaultTo={dates.to ? dates.to.toDate() : dates.to}
             onUpdateRange={this.onUpdateRange}
             hideDayPicker={this.hideDayPicker}
             inputsFocus={inputs.focus}
+            ref={this.dayPickerRef}
           />
         )}
       </Wrapper>
