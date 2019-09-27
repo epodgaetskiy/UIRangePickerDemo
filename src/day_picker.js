@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import moment from "moment";
 import DayPicker, { DateUtils } from "react-day-picker";
 import "react-day-picker/lib/style.css";
+import { CustomRangeSelect } from "./custom_range_select";
+import { CUSTOM_RANGES, getDates } from "./utils";
 
 const Popover = styled.div`
   position: absolute;
   z-index: 3;
+  top: 30px;
   border: 1px solid black;
 `;
 
@@ -21,7 +23,6 @@ const Cover = styled.div`
 const WrapperContent = styled.div`
   position: relative;
   z-index: 4;
-  display: flex;
 `;
 
 const DayPickerContainer = styled(DayPicker)`
@@ -40,7 +41,8 @@ export class UIDayPicker extends React.Component {
     this.state = {
       from: props.defaultFrom,
       to: props.defaultTo,
-      enteredTo: props.defaultTo
+      enteredTo: props.defaultTo,
+      customRange: ""
     };
   }
 
@@ -56,7 +58,8 @@ export class UIDayPicker extends React.Component {
       this.setState({
         from: day,
         to: null,
-        enteredTo: null
+        enteredTo: null,
+        customRange: ""
       });
       return;
     }
@@ -64,12 +67,14 @@ export class UIDayPicker extends React.Component {
       this.setState({
         from: day,
         to: null,
-        enteredTo: null
+        enteredTo: null,
+        customRange: ""
       });
     } else {
       this.setState({
         to: day,
-        enteredTo: day
+        enteredTo: day,
+        customRange: ""
       });
     }
   };
@@ -78,7 +83,8 @@ export class UIDayPicker extends React.Component {
     const { from, to } = this.state;
     if (!this.isSelectingFirstDay(from, to, day)) {
       this.setState({
-        enteredTo: day
+        enteredTo: day,
+        customRange: ""
       });
     }
   };
@@ -90,19 +96,16 @@ export class UIDayPicker extends React.Component {
     });
   };
 
-  reset = () => {
+  resetDates = () => {
     this.setState({
       from: this.props.defaultFrom,
       to: this.props.defaultTo,
-      enteredTo: this.props.defaultTo
+      enteredTo: this.props.defaultTo,
+      customRange: ""
     });
   };
 
-  updateLastDays = days => () => {
-    const from = moment()
-      .subtract(days - 1, "days")
-      .toDate();
-    const to = moment().toDate();
+  updateDates = ({ from, to }) => {
     this.setState({
       from,
       to,
@@ -110,88 +113,18 @@ export class UIDayPicker extends React.Component {
     });
   };
 
-  updateCurrentMonth = () => {
-    const from = moment()
-      .startOf("month")
-      .toDate();
-    const to = moment().toDate();
+  updateCustomRange = event => {
+    const { type, days } = CUSTOM_RANGES[event.target.value];
     this.setState({
-      from,
-      to,
-      enteredTo: to
+      customRange: event.target.value
     });
-  };
 
-  updatePreviousMonth = () => {
-    const from = moment()
-      .subtract(1, "months")
-      .startOf("month")
-      .toDate();
-    const to = moment()
-      .subtract(1, "months")
-      .endOf("month")
-      .toDate();
-
-    this.setState({
-      from,
-      to,
-      enteredTo: to
-    });
-  };
-
-  updateCurrentQuater = () => {
-    const from = moment()
-      .startOf("quarter")
-      .toDate();
-    const to = moment().toDate();
-
-    this.setState({
-      from,
-      to,
-      enteredTo: to
-    });
-  };
-
-  updatePreviousQuater = () => {
-    const from = moment()
-      .subtract(1, "quarter")
-      .startOf("quarter")
-      .toDate();
-    const to = moment()
-      .subtract(1, "quarter")
-      .endOf("quarter")
-      .toDate();
-
-    this.setState({
-      from,
-      to,
-      enteredTo: to
-    });
-  };
-
-  updateCurrentYear = () => {
-    const from = moment()
-      .startOf("year")
-      .toDate();
-
-    this.setState({
-      from
-    });
-  };
-
-  updateAllTime = () => {
-    const from = moment("01/01/2010", "M-D-Y").toDate();
-    const to = moment().toDate();
-
-    this.setState({
-      from,
-      to,
-      enteredTo: to
-    });
+    const { from, to } = getDates({ type, days });
+    this.updateDates({ from, to });
   };
 
   render() {
-    const { from, to, enteredTo } = this.state;
+    const { from, to, enteredTo, customRange } = this.state;
     const modifiers = { start: from, end: enteredTo };
     const disabledDays = { after: new Date() };
     const selectedDays = [from, { from, to: enteredTo }];
@@ -200,59 +133,25 @@ export class UIDayPicker extends React.Component {
         <Cover onClick={this.props.hideDayPicker} />
         <WrapperContent>
           <div>
-            <div>
-              <button type="button" onClick={this.updateLastDays(7)}>
-                Last 7 days
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateLastDays(14)}>
-                Last 14 days
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateLastDays(30)}>
-                Last 30 days
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateLastDays(90)}>
-                Last 90 days
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateCurrentMonth}>
-                Current month
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updatePreviousMonth}>
-                Previous month
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateCurrentQuater}>
-                Current quater
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updatePreviousQuater}>
-                Previous quater
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateCurrentYear}>
-                Current year
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.updateAllTime}>
-                All time
-              </button>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <CustomRangeSelect
+                value={customRange}
+                onChange={this.updateCustomRange}
+              />
+              <div>
+                <button type="button" onClick={this.resetDates}>
+                  Reset
+                </button>
+                <button type="button" onClick={this.handleUpdate}>
+                  Ok
+                </button>
+              </div>
             </div>
           </div>
           <DayPickerContainer
+            key={`${from}${to}`}
             numberOfMonths={3}
+            initialMonth={to}
             toMonth={to}
             selectedDays={selectedDays}
             disabledDays={disabledDays}
@@ -260,18 +159,6 @@ export class UIDayPicker extends React.Component {
             onDayClick={this.handleDayClick}
             onDayMouseEnter={this.handleDayMouseEnter}
           />
-          <div>
-            <div>
-              <button type="button" onClick={this.handleUpdate}>
-                Ok
-              </button>
-            </div>
-            <div>
-              <button type="button" onClick={this.reset}>
-                Reset
-              </button>
-            </div>
-          </div>
         </WrapperContent>
       </Popover>
     );
