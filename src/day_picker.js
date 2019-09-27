@@ -151,8 +151,11 @@ export class UIDayPicker extends React.Component {
     const disabledDays = { after: new Date() };
     const selectedDays = [from, { from, to: enteredTo }];
     const positionMonths = {
-      initialMonth: this.props.inputsFocus.from ? from : to,
-      // fromMonth: this.props.inputsFocus.from ? from : null,
+      initialMonth: this.props.inputsFocus.from
+        ? from
+        : this.props.inputsFocus.to
+        ? to
+        : new Date(),
       toMonth: new Date()
     };
     return (
